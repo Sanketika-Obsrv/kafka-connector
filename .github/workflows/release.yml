@@ -1,0 +1,60 @@
+name: Release Kafka Connector with Dependencies
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on tags like v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Kafka Connector Code
+      uses: actions/checkout@v4
+
+    - name: ☕ Set up Java 11
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Set up Maven
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        cache: 'maven'
+
+    - name: Clone job-sdk-scala
+      run: git clone https://github.com/Sanketika-Obsrv/job-sdk-scala.git
+
+    - name: Build job-sdk-scala
+      run: |
+        cd job-sdk-scala
+        mvn clean install -DskipTests
+
+    - name: Clone connector-sdk-scala
+      run: git clone https://github.com/Sanketika-Obsrv/connector-sdk-scala.git
+
+    - name: Build connector-sdk-scala
+      run: |
+        cd connector-sdk-scala
+        mvn clean install -DskipTests
+
+    - name: Build Kafka Connector
+      run: mvn clean package -DskipTests
+
+    - name: Inspect target/ directory
+      run: ls -lh target/
+
+    - name: Rename distribution tarball
+      run: |
+        cp target/kafka-connector-1.0.0-distribution.tar.gz kafka-connector.tar.gz
+
+    - name: Upload Release Asset
+      uses: softprops/action-gh-release@v2
+      with:
+        files: kafka-connector.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
