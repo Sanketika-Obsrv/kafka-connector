@@ -3,7 +3,7 @@ name: Release Kafka Connector with Dependencies
 on:
   push:
     tags:
-      - 'v*'  # Triggers on tags like v1.0.0
+      - '[0-9]+.[0-9]+.[0-9]+'  # Trigger only on tags like 1.0.0
 
 jobs:
   build-and-release:
