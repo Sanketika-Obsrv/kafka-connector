@@ -42,6 +42,52 @@
       "default": "kafka-connector-group",
       "uiIndex": 4
     },
+    "source_kafka_ssl_enabled": {
+      "title": "Enable SSL for Kafka",
+      "type": "boolean",
+      "description": "Enable this option if the Kafka is configured to use SSL for secure communication.",
+      "helptext": "<p>If enabled, ensure that all required SSL configuration properties are provided, such as:</p><ul><li><code>ssl.keystore.location</code></li><li><code>ssl.keystore.password</code></li><li><code>ssl.key.password</code></li><li><code>ssl.truststore.location</code></li><li><code>ssl.truststore.password</code></li></ul><p>These settings allow the Kafka source to establish a secure connection using SSL.</p>",
+      "default": false,
+      "uiIndex": 6
+    },
+    "source_kafka_ssl_truststore_base64": {
+      "title": "Truststore File (Base64)",
+      "type": "string",
+      "description": "Enter the Base64-encoded content of the truststore file.",
+      "helptext": "<p><strong>Kafka SSL Truststore:</strong> Provide the contents of the truststore file encoded in Base64. This file helps ensure secure communication by verifying the Kafka broker's certificate.</p><p><strong>Command to convert file content to base64:</strong><br/><code>base64 -i /path/to/truststore.jks | tr -d '\\n'</code></p>",
+      "uiIndex": 7
+    },
+    "source_kafka_ssl_keystore_base64": {
+      "title": "Keystore File (Base64)",
+      "type": "string",
+      "description": "Enter the Base64-encoded content of the keystore file.",
+      "helptext": "<p><strong>Kafka SSL Keystore:</strong> Provide the contents of the keystore file encoded in Base64. This file is required to authenticate the Kafka client securely during SSL handshake.</p><p><strong>Command to convert file content to base64:</strong><br/><code>base64 -i /path/to/keystore.jks | tr -d '\\n'</code></p>",
+      "uiIndex": 8
+    },
+    "source_kafka_ssl_truststore_password": {
+      "title": "Truststore Password",
+      "type": "string",
+      "description": "Enter the password used to protect the truststore file.",
+      "helptext": "<p><strong>Kafka SSL Truststore Password:</strong> Used to access the truststore, which verifies the SSL certificate presented by the Kafka broker.</p>",
+      "format": "password",
+      "uiIndex": 9
+    },
+    "source_kafka_ssl_keystore_password": {
+      "title": "Keystore Password",
+      "type": "string",
+      "description": "Enter the password used to protect the keystore file.",
+      "helptext": "<p><strong>Kafka SSL Keystore Password:</strong> Used to unlock the keystore containing the client's SSL certificate and private key.</p>",
+      "format": "password",
+      "uiIndex": 10
+    },
+    "source_kafka_ssl_key_password": {
+      "title": "Key Password",
+      "type": "string",
+      "description": "Enter the password used to access the private key inside the keystore.",
+      "helptext": "<p><strong>Kafka SSL Key Password:</strong> Used to decrypt the private key within the keystore for SSL client authentication.</p>",
+      "format": "password",
+      "uiIndex": 11
+    },
     "source_data_format": {
       "title": "Data Format",
       "type": "string",

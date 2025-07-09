@@ -18,7 +18,8 @@ import org.sunbird.obsrv.job.exception.UnsupportedDataFormatException
 import org.sunbird.obsrv.job.model.Models.ErrorData
 
 import java.nio.charset.StandardCharsets
-import java.util.Properties
+import java.nio.file.{Files, Path}
+import java.util.{Base64, Properties}
 
 object KafkaConnector {
 
@@ -29,12 +30,49 @@ object KafkaConnector {
 
 class KafkaConnectorSource extends IConnectorSource {
 
+  private def base64ToTempFile(base64String: String, prefix: String): Path = {
+    val cleanBase64 = base64String.replaceAll("\\s+", "") // Remove all whitespace
+    val decoded = Base64.getDecoder.decode(cleanBase64)
+
+    val tempFile = Files.createTempFile(prefix, ".jks")
+    Files.write(tempFile, decoded)
+    tempFile.toAbsolutePath
+  }
+
   private def kafkaConsumerProperties(config: Config): Properties = {
     val properties = new Properties()
     properties.setProperty("bootstrap.servers", config.getString("source_kafka_broker_servers"))
     properties.setProperty("group.id", config.getString("source_kafka_consumer_id"))
     properties.setProperty(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed")
     properties.setProperty("auto.offset.reset", config.getString("source_kafka_auto_offset_reset"))
+
+    // Add SSL configuration if enabled
+    if (config.hasPath("source_kafka_ssl_enabled") && config.getBoolean("source_kafka_ssl_enabled")) {
+      // Create temporary files from base64 strings
+      val truststorePath = base64ToTempFile(
+        config.getString("source_kafka_ssl_truststore_base64"),
+        "kafka-truststore"
+      )
+      val keystorePath = base64ToTempFile(
+        config.getString("source_kafka_ssl_keystore_base64"),
+        "kafka-keystore"
+      )
+
+      // Set SSL properties
+      properties.setProperty("security.protocol", "SSL")
+      properties.setProperty("ssl.truststore.location", truststorePath.toString)
+      properties.setProperty("ssl.truststore.password", config.getString("source_kafka_ssl_truststore_password"))
+      properties.setProperty("ssl.keystore.location", keystorePath.toString)
+      properties.setProperty("ssl.keystore.password", config.getString("source_kafka_ssl_keystore_password"))
+      properties.setProperty("ssl.key.password", config.getString("source_kafka_ssl_key_password"))
+
+      // Add shutdown hook to cleanup temporary files
+      Runtime.getRuntime.addShutdownHook(new Thread(() => {
+        Files.deleteIfExists(truststorePath)
+        Files.deleteIfExists(keystorePath)
+      }))
+    }
+
     properties
   }
 
