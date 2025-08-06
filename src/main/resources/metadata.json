@@ -13,7 +13,7 @@
     "licence": "MIT",
     "owner": "Sunbird",
     "main_class": "org.sunbird.obsrv.connector.KafkaConnector",
-    "main_program": "kafka-connector-1.0.0.jar",
+    "main_program": "kafka-connector-2.0.0.jar",
     "icon": "kafka.svg"
   }
 }
