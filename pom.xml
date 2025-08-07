@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.sunbird.obsrv.connector</groupId>
             <artifactId>connector-sdk-flink</artifactId>
-            <version>1.0.0</version>
+            <version>2.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.flink</groupId>
@@ -103,7 +103,7 @@
         <dependency>
             <groupId>org.sunbird.obsrv.connector</groupId>
             <artifactId>connector-sdk-flink</artifactId>
-            <version>1.0.0</version>
+            <version>2.0.0</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
