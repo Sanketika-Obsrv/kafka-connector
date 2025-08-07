@@ -26,22 +26,6 @@ jobs:
         java-version: '11'
         cache: 'maven'
 
-    - name: Clone job-sdk-scala
-      run: git clone https://github.com/Sanketika-Obsrv/job-sdk-scala.git
-
-    - name: Build job-sdk-scala
-      run: |
-        cd job-sdk-scala
-        mvn clean install -DskipTests
-
-    - name: Clone connector-sdk-scala
-      run: git clone https://github.com/Sanketika-Obsrv/connector-sdk-scala.git
-
-    - name: Build connector-sdk-scala
-      run: |
-        cd connector-sdk-scala
-        mvn clean install -DskipTests
-
     - name: Build Kafka Connector
       run: mvn clean package -DskipTests
 
@@ -50,7 +34,9 @@ jobs:
 
     - name: Rename distribution tarball
       run: |
-        cp target/kafka-connector-1.0.0-distribution.tar.gz kafka-connector.tar.gz
+        VERSION=${GITHUB_REF_NAME}
+        echo "Detected version: $VERSION"
+        cp target/kafka-connector-${VERSION}-distribution.tar.gz kafka-connector.tar.gz
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v2
