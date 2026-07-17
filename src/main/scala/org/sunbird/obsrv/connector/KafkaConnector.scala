@@ -77,6 +77,15 @@ class KafkaConnectorSource extends IConnectorSource {
     properties
   }
 
+  private def offsetResetStrategy(config: Config): OffsetResetStrategy = {
+    val value = if (config.hasPath("source_kafka_auto_offset_reset")) config.getString("source_kafka_auto_offset_reset") else "earliest"
+    value.toLowerCase match {
+      case "latest" => OffsetResetStrategy.LATEST
+      case "none"   => OffsetResetStrategy.NONE
+      case _         => OffsetResetStrategy.EARLIEST
+    }
+  }
+
   private def kafkaSource(config: Config): KafkaSource[String] = {
     val dataFormat = config.getString("source_data_format")
     if(!"json".equals(config.getString("source_data_format"))) {
@@ -86,7 +95,7 @@ class KafkaConnectorSource extends IConnectorSource {
       .setTopics(config.getString("source_kafka_topic"))
       .setDeserializer(new StringDeserializationSchema)
       .setProperties(kafkaConsumerProperties(config))
-      .setStartingOffsets(OffsetsInitializer.committedOffsets(OffsetResetStrategy.EARLIEST))
+      .setStartingOffsets(OffsetsInitializer.committedOffsets(offsetResetStrategy(config)))
       .build()
   }
 
