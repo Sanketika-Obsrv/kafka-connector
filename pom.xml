@@ -17,8 +17,11 @@
         <encoding>UTF-8</encoding>
         <scala.maj.version>2.12</scala.maj.version>
         <scala.version>2.12.11</scala.version>
-        <kafka.version>3.7.1</kafka.version>
+        <kafka.version>3.9.2</kafka.version>
         <flink.version>1.20.1</flink.version>
+        <jackson.version>2.22.2</jackson.version>
+        <log4j.version>2.26.1</log4j.version>
+        <embedded.kafka.version>3.9.2</embedded.kafka.version>
         <java.target.runtime>11</java.target.runtime>
         <jackson-jaxrs.version>1.9.13</jackson-jaxrs.version>
         <scoverage.plugin.version>1.4.0</scoverage.plugin.version>
@@ -47,6 +50,71 @@
             <url>http://scala-tools.org/repo-releases</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- transitives of connector-sdk-flink, pinned here until the SDK ships fixed versions -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-scala_${scala.maj.version}</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <!-- transitives of flink-connector-kafka; kept on the same jackson line as core/databind -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.20.0</version>
+            </dependency>
+            <!-- transitive of kafka-clients; kafka 3.9.2 uses the maintained at.yawk fork -->
+            <dependency>
+                <groupId>at.yawk.lz4</groupId>
+                <artifactId>lz4-java</artifactId>
+                <version>1.11.2</version>
+            </dependency>
+            <!-- test-scope only, via flink-runtime:tests; 1.8.1 is the last release of this artifact -->
+            <dependency>
+                <groupId>org.lz4</groupId>
+                <artifactId>lz4-java</artifactId>
+                <version>1.8.1</version>
+            </dependency>
+            <!-- transitive of embedded-postgres, test scope -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.7.13</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 
@@ -88,7 +156,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.15.2</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -98,7 +166,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
-            <version>2.12.7</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sunbird.obsrv.connector</groupId>
@@ -116,7 +184,7 @@
         <dependency>
             <groupId>io.github.embeddedkafka</groupId>
             <artifactId>embedded-kafka_2.12</artifactId>
-            <version>3.4.0</version>
+            <version>${embedded.kafka.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
