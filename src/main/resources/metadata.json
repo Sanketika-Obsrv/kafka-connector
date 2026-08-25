@@ -6,14 +6,14 @@
     "description": "Pull data from a Kafka Source",
     "type": "source",
     "tenant": "single",
-    "version": "2.0.0",
+    "version": "2.2.0",
     "category": "stream",
     "technology": "scala",
     "runtime": "flink",
     "licence": "MIT",
     "owner": "Sunbird",
     "main_class": "org.sunbird.obsrv.connector.KafkaConnector",
-    "main_program": "kafka-connector-2.0.0.jar",
+    "main_program": "kafka-connector-2.2.0.jar",
     "icon": "kafka.svg"
   }
 }
