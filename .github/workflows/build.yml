@@ -36,11 +36,12 @@ jobs:
       run: |
         VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "Detected version: $VERSION"
-        cp target/kafka-connector-${VERSION}-distribution.tar.gz kafka-connector.tar.gz
+        cp target/kafka-connector-${VERSION}-distribution.tar.gz kafka-connector-${VERSION}.tar.gz
+        echo "TARBALL_NAME=kafka-connector-${VERSION}.tar.gz" >> "$GITHUB_ENV"
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v2
       with:
-        files: kafka-connector.tar.gz
+        files: ${{ env.TARBALL_NAME }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
