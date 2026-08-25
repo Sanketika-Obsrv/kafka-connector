@@ -34,7 +34,7 @@ jobs:
 
     - name: Rename distribution tarball
       run: |
-        VERSION=${GITHUB_REF_NAME}
+        VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "Detected version: $VERSION"
         cp target/kafka-connector-${VERSION}-distribution.tar.gz kafka-connector.tar.gz
 
